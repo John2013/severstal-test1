@@ -1,7 +1,7 @@
+from codecs import BOM_UTF8
 from collections import Counter
 from dataclasses import dataclass
 from operator import attrgetter
-from pprint import pprint
 from typing import List, Dict
 
 
@@ -97,11 +97,16 @@ def sort_lacks(lacks: List[Lack]):
 
 
 def get_result_str(lacks: List[Lack]) -> str:
-    return "\n\n".join(list(map(str, lacks)))
+    return "\n".join(list(map(str, lacks)))
+
+
+def write_result(result_str: str, filename='output.txt'):
+    with open(filename, 'w', encoding='utf-8-sig') as file:
+        file.write(result_str)
 
 
 if __name__ == '__main__':
     shops = get_input_data()
     lacks = sort_lacks(get_lacks(shops))
     result_str = get_result_str(lacks)
-    print(result_str)
+    write_result(result_str)
