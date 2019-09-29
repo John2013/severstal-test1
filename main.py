@@ -18,6 +18,9 @@ class Shop:
             item_name, item_count = item.split(' - ', 1)
             self.catalog[item_name] = int(item_count)
 
+    def get_items_names(self):
+        return set(self.catalog)
+
     def __repr__(self):
         return f"{self.name}: {self.catalog}"
 
@@ -34,6 +37,17 @@ def get_input_data(filename='input.txt') -> List[Shop]:
     return shops
 
 
+def get_all_items_names(shops: List[Shop]) -> set:
+    all_names = set()
+
+    for shop in shops:
+        all_names |= shop.get_items_names()
+
+    return all_names
+
+
 if __name__ == '__main__':
     shops = get_input_data()
     pprint(shops)
+    all_names = get_all_items_names(shops)
+    pprint(all_names)
