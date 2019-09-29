@@ -1,6 +1,8 @@
 from collections import Counter
+from dataclasses import dataclass
+from operator import attrgetter
 from pprint import pprint
-from typing import List
+from typing import List, Dict
 
 
 class Shop:
@@ -24,6 +26,25 @@ class Shop:
     def __repr__(self):
         return f"{self.name}: {self.catalog}"
 
+    def __str__(self):
+        return self.name
+
+
+@dataclass
+class Lack:
+    item_name: str
+    count: int
+    shops: frozenset
+
+    def __repr__(self):
+        if self.count:
+            shops_str = ", ".join(self.shops)
+            shops_str = f" ({shops_str})"
+        else:
+            shops_str = ""
+
+        return f"{self.item_name} - {self.count}{shops_str}"
+
 
 def get_input_data(filename='input.txt') -> List[Shop]:
     with open(filename, 'r', encoding='utf-8') as file:
@@ -46,8 +67,37 @@ def get_all_items_names(shops: List[Shop]) -> set:
     return all_names
 
 
+def get_lacks(shops: List[Shop]) -> List[Lack]:
+    set_of_lacks = set()
+
+    lack_items_shops: Dict[str, set] = {}
+
+    all_names = get_all_items_names(shops)
+
+    lacks: List[Lack] = []
+
+    for item_name in all_names:
+        lack_items_shops[item_name] = set()
+        for shop in shops:
+            if shop.catalog[item_name] == 0:
+                set_of_lacks.add(item_name)
+                lack_items_shops[item_name].add(shop.name)
+
+        lacks.append(Lack(
+            item_name=item_name,
+            count=len(lack_items_shops[item_name]),
+            shops=frozenset(lack_items_shops[item_name])
+        ))
+
+    return lacks
+
+
+def sort_lacks(lacks: List[Lack]):
+    return sorted(lacks, key=attrgetter('count'))
+
+
 if __name__ == '__main__':
     shops = get_input_data()
     pprint(shops)
-    all_names = get_all_items_names(shops)
-    pprint(all_names)
+    lacks = sort_lacks(get_lacks(shops))
+    pprint(lacks)
