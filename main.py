@@ -93,11 +93,15 @@ def get_lacks(shops: List[Shop]) -> List[Lack]:
 
 
 def sort_lacks(lacks: List[Lack]):
-    return sorted(lacks, key=attrgetter('count'))
+    return sorted(lacks, key=attrgetter('count', 'item_name'))
+
+
+def get_result_str(lacks: List[Lack]) -> str:
+    return "\n\n".join(list(map(str, lacks)))
 
 
 if __name__ == '__main__':
     shops = get_input_data()
-    pprint(shops)
     lacks = sort_lacks(get_lacks(shops))
-    pprint(lacks)
+    result_str = get_result_str(lacks)
+    print(result_str)
