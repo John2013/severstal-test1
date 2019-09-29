@@ -1,4 +1,3 @@
-from codecs import BOM_UTF8
 from collections import Counter
 from dataclasses import dataclass
 from operator import attrgetter
